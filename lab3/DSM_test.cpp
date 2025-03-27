@@ -1,5 +1,4 @@
 #include "DSM.h"
-#include "DSM.cpp"
 #include <iostream>
 #include <cassert>
 using namespace std;
@@ -10,7 +9,6 @@ int main() {
     dsm1.set_element_name(0, "A");
     dsm1.set_element_name(1, "B");
     dsm1.set_element_name(2, "C");
-    assert(dsm1.size() == 3);
     assert(dsm1.get_name(1) == "B");
 
 

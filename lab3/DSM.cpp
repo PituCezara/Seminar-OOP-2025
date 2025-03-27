@@ -7,7 +7,7 @@
 #include <string>
 #include <stdexcept>
 
-// Constructor cu număr de elemente - alocă matricea și o inițializează cu 0
+// alocă matricea și o inițializează cu 0
 DSM::DSM(const int count) {
     capacity = count;
     currentSize = 0;
@@ -19,7 +19,7 @@ DSM::DSM(const int count) {
     }
 }
 
-// Constructor cu vector de nume - setează numele nodurilor și creează matricea
+// setează numele nodurilor și creează matricea
 DSM::DSM(std::vector<std::string> names) {
     nodeNames = std::move(names);
     capacity = nodeNames.size();
@@ -46,22 +46,22 @@ DSM::DSM(const DSM& other) {
     }
 }
 
-// Returnează numărul de noduri (dimensiunea actuală)
+// Returnează numărul de noduri (adica dimensiunea actuală)
 int DSM::size() const {
     return nodeNames.size();
 }
 
 // Returnează numele nodului de la un anumit index
 std::string DSM::get_name(int index) const {
-    if (index < 0 || index >= size())
-        return ""; // alternativ: throw std::domain_error(...)
+    if (...)
+        throw std::domain_error("Elementname nicht gefunden");
     return nodeNames[index];
 }
 
 // Setează numele unui nod la un anumit index
 void DSM::set_element_name(int index, std::string name) {
     if (index < 0 || index >= size())
-        return; // alternativ: throw std::domain_error(...)
+        return;
     nodeNames[index] = std::move(name);
 }
 
@@ -84,7 +84,7 @@ void DSM::ensure_size(int new_size) {
                 if (i < capacity && j < capacity)
                     newMatrix[i][j] = adjMatrix[i][j];
                 else
-                    newMatrix[i][j] = 0.0f;
+                    newMatrix[i][j] = 0;
             }
         }
         for (int i = 0; i < capacity; ++i) {
@@ -101,19 +101,6 @@ void DSM::ensure_size(int new_size) {
 void DSM::add_link(std::string from, std::string to, float weight) {
     int from_idx = get_index(from);
     int to_idx = get_index(to);
-
-    if (from_idx == -1) {
-        from_idx = currentSize;
-        ensure_size(currentSize + 1);
-        nodeNames[from_idx] = std::move(from);
-        currentSize++;
-    }
-    if (to_idx == -1) {
-        to_idx = currentSize;
-        ensure_size(currentSize + 1);
-        nodeNames[to_idx] = std::move(to);
-        currentSize++;
-    }
     adjMatrix[from_idx][to_idx] = weight;
 }
 
@@ -121,32 +108,27 @@ void DSM::add_link(std::string from, std::string to, float weight) {
 void DSM::delete_link(std::string from, std::string to) {
     int from_idx = get_index(from);
     int to_idx = get_index(to);
-    if (from_idx == -1 || to_idx == -1)
-        return;
-    adjMatrix[from_idx][to_idx] = 0.0f;
+    adjMatrix[from_idx][to_idx] = 0;
 }
 
 // Verifică dacă există o legătură între două noduri
 bool DSM::have_link(std::string from, std::string to) const {
     int from_idx = get_index(from);
     int to_idx = get_index(to);
-    return from_idx != -1 && to_idx != -1 && adjMatrix[from_idx][to_idx] != 0.0f;
+    return from_idx != -1 && to_idx != -1 && adjMatrix[from_idx][to_idx] != 0;
 }
 
 // Returnează greutatea legăturii între două noduri
 float DSM::link_weight(std::string from, std::string to) const {
     int from_idx = get_index(from);
     int to_idx = get_index(to);
-    if (from_idx == -1 || to_idx == -1)
-        throw std::domain_error("Elementname nicht gefunden");
+
     return adjMatrix[from_idx][to_idx];
 }
 
 // Numără câte legături vin spre un anumit nod
 int DSM::count_to_links(std::string name) const {
     int idx = get_index(name);
-    if (idx == -1)
-        throw std::domain_error("Elementname nicht gefunden");
     int count = 0;
     for (int i = 0; i < currentSize; ++i) {
         if (adjMatrix[i][idx] != 0.0f)
